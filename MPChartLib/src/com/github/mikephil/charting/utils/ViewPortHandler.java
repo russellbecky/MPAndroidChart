@@ -290,12 +290,10 @@ public class ViewPortHandler {
         float curScaleY = vals[Matrix.MSCALE_Y];
 
         // min scale-x is 1f
-        if (curScaleX < mScaleX)
-            curScaleX = mMinScaleX;
+        float newScaleX = mMinScaleX;
 
         // min scale-y is 1f
-        if (curScaleY < mScaleY)
-            curScaleY = mMinScaleY;
+        float newScaleY = mMinScaleY;
 
         float width = 0f;
         float height = 0f;
@@ -305,14 +303,14 @@ public class ViewPortHandler {
             height = content.height();
         }
 
-        float maxTransX = -width * (curScaleX - 1f);
+        float maxTransX = -width * (newScaleX - 1f);
         float newTransX = Math.min(Math.max(curTransX, maxTransX - mTransOffsetX), mTransOffsetX);
 
         // if(curScaleX < mMinScaleX) {
         // newTransX = (-width * (mScaleX - 1f)) / 2f;
         // }
 
-        float maxTransY = height * (curScaleY - 1f);
+        float maxTransY = height * (newScaleY - 1f);
         float newTransY = Math.max(Math.min(curTransY, maxTransY + mTransOffsetY), -mTransOffsetY);
 
         // if(curScaleY < mMinScaleY) {
@@ -320,10 +318,10 @@ public class ViewPortHandler {
         // }
 
         vals[Matrix.MTRANS_X] = newTransX;
-        vals[Matrix.MSCALE_X] = curScaleX;
+        vals[Matrix.MSCALE_X] = newScaleX;
 
         vals[Matrix.MTRANS_Y] = newTransY;
-        vals[Matrix.MSCALE_Y] = curScaleY;
+        vals[Matrix.MSCALE_Y] = newScaleY;
 
         matrix.setValues(vals);
     }
