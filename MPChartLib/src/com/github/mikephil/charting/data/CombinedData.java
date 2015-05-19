@@ -92,4 +92,10 @@ public class CombinedData extends BarLineScatterCandleData<BarLineScatterCandleD
         if (mBubbleData != null)
             mBubbleData.notifyDataChanged();
     }
+
+    // BECKY
+    public void setXValues(List<String> xVals) {
+        this.mXVals = xVals;
+        init(mDataSets);
+    }
 }
