@@ -530,34 +530,36 @@ public class LineChartRenderer extends DataRenderer {
     @Override
     public void drawHighlighted(Canvas c, Highlight[] indices) {
 
-        for (int i = 0; i < indices.length; i++) {
-
-            LineDataSet set = mChart.getLineData().getDataSetByIndex(indices[i]
-                    .getDataSetIndex());
-
-            if (set == null)
-                continue;
-
-            mHighlightPaint.setColor(set.getHighLightColor());
-
-            int xIndex = indices[i].getXIndex(); // get the
-                                                 // x-position
-
-            if (xIndex > mChart.getXChartMax() * mAnimator.getPhaseX())
-                continue;
-
-            float y = set.getYValForXIndex(xIndex) * mAnimator.getPhaseY(); // get
-                                                                            // the
-            // y-position
-
-            float[] pts = new float[] {
-                    xIndex, mChart.getYChartMax(), xIndex, mChart.getYChartMin(), mChart.getXChartMin(), y,
-                    mChart.getXChartMax(), y
-            };
-
-            mChart.getTransformer(set.getAxisDependency()).pointValuesToPixel(pts);
-            // draw the highlight lines
-            c.drawLines(pts, mHighlightPaint);
-        }
+        // No Line highlights for Greenchoice graph!
+        // Just commented out in case in the future we want to do something with it
+//        for (int i = 0; i < indices.length; i++) {
+//
+//            LineDataSet set = mChart.getLineData().getDataSetByIndex(indices[i]
+//                    .getDataSetIndex());
+//
+//            if (set == null)
+//                continue;
+//
+//            mHighlightPaint.setColor(set.getHighLightColor());
+//
+//            int xIndex = indices[i].getXIndex(); // get the
+//                                                 // x-position
+//
+//            if (xIndex > mChart.getXChartMax() * mAnimator.getPhaseX())
+//                continue;
+//
+//            float y = set.getYValForXIndex(xIndex) * mAnimator.getPhaseY(); // get
+//                                                                            // the
+//            // y-position
+//
+//            float[] pts = new float[] {
+//                    xIndex, mChart.getYChartMax(), xIndex, mChart.getYChartMin(), mChart.getXChartMin(), y,
+//                    mChart.getXChartMax(), y
+//            };
+//
+//            mChart.getTransformer(set.getAxisDependency()).pointValuesToPixel(pts);
+//            // draw the highlight lines
+//            c.drawLines(pts, mHighlightPaint);
+//        }
     }
 }
