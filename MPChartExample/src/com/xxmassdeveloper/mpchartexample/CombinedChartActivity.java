@@ -97,6 +97,12 @@ public class CombinedChartActivity extends DemoBase {
         set.setValueTextSize(10f);
         set.setValueTextColor(Color.rgb(240, 238, 70));
 
+        set.setDrawValues(false);
+        set.setAxisDependency(YAxis.AxisDependency.LEFT);
+        set.setDrawCircles(false);
+        set.setDrawCircleHole(false);
+        set.setDrawCubic(true);
+
         set.setAxisDependency(YAxis.AxisDependency.LEFT);
 
         d.addDataSet(set);

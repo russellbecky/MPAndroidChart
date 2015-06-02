@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Path;
+import android.util.Log;
 
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.CircleBuffer;
@@ -171,7 +172,19 @@ public class LineChartRenderer extends DataRenderer {
             curDx = (next.getXIndex() - cur.getXIndex()) * intensity;
             curDy = (next.getVal() - cur.getVal()) * intensity;
 
-            // the first cubic
+//            // From the edge to the first cubic - so that the line starts at the beginning of the
+//            // graph, not from the middle of the first bar
+////            cubicPath.cubicTo(-1, (prev.getVal() - curDy) * phaseY, prev.getXIndex(), (prev.getVal()) * phaseY, prev.getXIndex() - curDx, (prev.getVal() - curDy) * phaseY);
+//
+//            // the first cubic
+////            cubicPath.cubicTo(-1, (prev.getVal() - prevDy) * phaseY,
+////                    -0.8f, (prev.getVal()) * phaseY, -0.6f, (prev.getVal() + prevDy) * phaseY);
+//
+//            cubicPath.cubicTo(-0.4f, (prev.getVal() + prevDy) * phaseY,
+//                    cur.getXIndex() - curDx,
+//                    (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
+
+            // ORIGINAL!
             cubicPath.cubicTo(prev.getXIndex() + prevDx, (prev.getVal() + prevDy) * phaseY,
                     cur.getXIndex() - curDx,
                     (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
@@ -208,8 +221,14 @@ public class LineChartRenderer extends DataRenderer {
 
                 // the last cubic
                 cubicPath.cubicTo(prev.getXIndex() + prevDx, (prev.getVal() + prevDy) * phaseY,
-                        cur.getXIndex() - curDx,
-                        (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
+                        cur.getXIndex() - curDx*2,
+                        (cur.getVal() - curDy) * phaseY, cur.getXIndex()-curDx, cur.getVal() * phaseY);
+
+                // From the edge to the first cubic - so that the line starts at the beginning of the
+                // graph, not from the middle of the first bar
+                cubicPath.cubicTo(cur.getXIndex()-curDx, cur.getVal() * phaseY,
+                        cur.getXIndex()+curDx,
+                        (cur.getVal() + curDy) * phaseY, cur.getXIndex()+1, cur.getVal() * phaseY);
             }
         }
 
