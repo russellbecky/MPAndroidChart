@@ -11,6 +11,8 @@ import android.util.Log;
 import com.github.mikephil.charting.animation.ChartAnimator;
 import com.github.mikephil.charting.buffer.CircleBuffer;
 import com.github.mikephil.charting.buffer.LineBuffer;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
@@ -46,6 +48,9 @@ public class LineChartRenderer extends DataRenderer {
     protected LineBuffer[] mLineBuffers;
 
     protected CircleBuffer[] mCircleBuffers;
+
+    // BECKY
+    protected float mPercentageBarSpace = 0;
 
     public LineChartRenderer(LineDataProvider chart, ChartAnimator animator,
             ViewPortHandler viewPortHandler) {
@@ -100,6 +105,12 @@ public class LineChartRenderer extends DataRenderer {
         }
 
         c.drawBitmap(mDrawBitmap, 0, 0, mRenderPaint);
+    }
+
+    // BECKY
+    public void drawData(Canvas c, float percentageBarSpace) {
+        mPercentageBarSpace = percentageBarSpace;
+        drawData(c);
     }
 
     protected void drawDataSet(Canvas c, LineDataSet dataSet) {
@@ -174,11 +185,15 @@ public class LineChartRenderer extends DataRenderer {
             curDy = (next.getVal() - cur.getVal()) * intensity;
 
             // BECKY - start the line at the beginning of the bar
-            cubicPath.moveTo(-1, (prev.getVal() + prevDy) * phaseY);
+            float startXPos = -0.5f;
+            if (mPercentageBarSpace > 0) {
+                startXPos = startXPos + (1/mPercentageBarSpace);
+            }
+            cubicPath.moveTo(startXPos, (prev.getVal() + prevDy) * phaseY);
 
             // Then create line to center at same height
-            cubicPath.cubicTo(-0.6f, (prev.getVal() + prevDy) * phaseY,
-                    -0.4f, (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
+            cubicPath.cubicTo((cur.getXIndex()+startXPos)/3*2, (prev.getVal() + prevDy) * phaseY,
+                    (cur.getXIndex()+startXPos)/3, (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
 
             for (int j = minx + 1, count = Math.min(size, entries.size() - 1); j < count; j++) {
 
@@ -215,11 +230,15 @@ public class LineChartRenderer extends DataRenderer {
                         cur.getXIndex() - curDx*2,
                         (cur.getVal() - curDy) * phaseY, cur.getXIndex()-curDx, cur.getVal() * phaseY);
 
-                // From the edge to the first cubic - so that the line starts at the beginning of the
+                // BECKY From the edge to the first cubic - so that the line starts at the beginning of the
                 // graph, not from the middle of the first bar
+                float endXPos = 0.5f;
+                if (mPercentageBarSpace > 0) {
+                    endXPos = endXPos - (1/mPercentageBarSpace);
+                }
                 cubicPath.cubicTo(cur.getXIndex()-curDx, cur.getVal() * phaseY,
                         cur.getXIndex()+curDx,
-                        (cur.getVal() + curDy) * phaseY, cur.getXIndex()+1, cur.getVal() * phaseY);
+                        (cur.getVal() + curDy) * phaseY, cur.getXIndex() + endXPos, cur.getVal() * phaseY);
             }
         }
 
