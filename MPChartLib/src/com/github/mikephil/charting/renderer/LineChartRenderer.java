@@ -164,6 +164,7 @@ public class LineChartRenderer extends DataRenderer {
             Entry next = entries.get(minx + 1);
 
             // let the spline start
+            // BECKY - commented out, added moveTo below
             cubicPath.moveTo(cur.getXIndex(), cur.getVal() * phaseY);
 
             prevDx = (cur.getXIndex() - prev.getXIndex()) * intensity;
@@ -172,22 +173,12 @@ public class LineChartRenderer extends DataRenderer {
             curDx = (next.getXIndex() - cur.getXIndex()) * intensity;
             curDy = (next.getVal() - cur.getVal()) * intensity;
 
-//            // From the edge to the first cubic - so that the line starts at the beginning of the
-//            // graph, not from the middle of the first bar
-////            cubicPath.cubicTo(-1, (prev.getVal() - curDy) * phaseY, prev.getXIndex(), (prev.getVal()) * phaseY, prev.getXIndex() - curDx, (prev.getVal() - curDy) * phaseY);
-//
-//            // the first cubic
-////            cubicPath.cubicTo(-1, (prev.getVal() - prevDy) * phaseY,
-////                    -0.8f, (prev.getVal()) * phaseY, -0.6f, (prev.getVal() + prevDy) * phaseY);
-//
-//            cubicPath.cubicTo(-0.4f, (prev.getVal() + prevDy) * phaseY,
-//                    cur.getXIndex() - curDx,
-//                    (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
+            // BECKY - start the line at the beginning of the bar
+            cubicPath.moveTo(-1, (prev.getVal() + prevDy) * phaseY);
 
-            // ORIGINAL!
-            cubicPath.cubicTo(prev.getXIndex() + prevDx, (prev.getVal() + prevDy) * phaseY,
-                    cur.getXIndex() - curDx,
-                    (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
+            // Then create line to center at same height
+            cubicPath.cubicTo(-0.6f, (prev.getVal() + prevDy) * phaseY,
+                    -0.4f, (cur.getVal() - curDy) * phaseY, cur.getXIndex(), cur.getVal() * phaseY);
 
             for (int j = minx + 1, count = Math.min(size, entries.size() - 1); j < count; j++) {
 
