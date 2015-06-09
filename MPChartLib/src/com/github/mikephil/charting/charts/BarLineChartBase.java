@@ -1177,7 +1177,7 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
     public float getLowestSnapToXIndex() {
         float[] pts = new float[]{this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom()};
         this.getTransformer(AxisDependency.LEFT).pixelsToValue(pts);
-        return pts[0] <= 0.0F?0:((int)pts[0] + ((pts[0]%(int)pts[0]>0)?0.5f:-0.5f));
+        return pts[0] <= 0.0F?-0.5f:((int)pts[0] + ((pts[0]%(int)pts[0]>0)?0.5f:-0.5f));
     }
 
     /**
