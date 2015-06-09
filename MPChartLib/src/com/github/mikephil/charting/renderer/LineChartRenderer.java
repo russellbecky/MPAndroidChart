@@ -187,7 +187,7 @@ public class LineChartRenderer extends DataRenderer {
             // BECKY - start the line at the beginning of the bar
             float startXPos = -0.5f;
             if (mPercentageBarSpace > 0) {
-                startXPos = startXPos + (1/mPercentageBarSpace);
+                startXPos = startXPos + (1/mPercentageBarSpace*2);
             }
             cubicPath.moveTo(startXPos, (prev.getVal() + prevDy) * phaseY);
 
@@ -234,7 +234,7 @@ public class LineChartRenderer extends DataRenderer {
                 // graph, not from the middle of the first bar
                 float endXPos = 0.5f;
                 if (mPercentageBarSpace > 0) {
-                    endXPos = endXPos - (1/mPercentageBarSpace);
+                    endXPos = endXPos - (1/mPercentageBarSpace*1.5f);
                 }
                 cubicPath.cubicTo(cur.getXIndex()-curDx, cur.getVal() * phaseY,
                         cur.getXIndex()+curDx,

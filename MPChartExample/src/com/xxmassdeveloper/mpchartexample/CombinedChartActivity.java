@@ -3,8 +3,10 @@ package com.xxmassdeveloper.mpchartexample;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.WindowManager;
 
 import com.github.mikephil.charting.charts.CombinedChart;
@@ -28,6 +30,7 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.data.ScatterData;
 import com.github.mikephil.charting.data.ScatterDataSet;
+import com.github.mikephil.charting.listener.OnChartGestureListener;
 import com.github.mikephil.charting.utils.ColorTemplate;
 import com.xxmassdeveloper.mpchartexample.notimportant.DemoBase;
 
@@ -50,7 +53,7 @@ public class CombinedChartActivity extends DemoBase {
         mChart.setBackgroundColor(Color.WHITE);
         mChart.setDrawGridBackground(false);
         mChart.setDrawBarShadow(false);
-        
+
         // draw bars behind lines
         mChart.setDrawOrder(new DrawOrder[] {
                 DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE, DrawOrder.LINE, DrawOrder.SCATTER
@@ -74,8 +77,70 @@ public class CombinedChartActivity extends DemoBase {
 //         data.setData(generateCandleData());
 
         mChart.setData(data);
+
+        mChart.setVisibleXRange(6);
+
+        mChart.setOnChartGestureListener(mOnChartGestureListener);
+
         mChart.invalidate();
+
+//        mChart.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                mChart.getHighestVisibleXIndex();
+//                mChart.moveViewToX(3.5f);
+//                // Do post delayed, otherwise move-to isn't shown
+//                mChart.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mChart.invalidate();
+//                    }
+//                }, 100L);
+//            }
+//        }, 3000);
     }
+
+    OnChartGestureListener mOnChartGestureListener = new OnChartGestureListener() {
+        @Override
+        public void onChartLongPressed(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public void onChartDoubleTapped(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public void onChartSingleTapped(MotionEvent motionEvent) {
+
+        }
+
+        @Override
+        public void onChartFling(MotionEvent motionEvent, MotionEvent motionEvent1, float v, float v1) {
+
+            // Snap into position
+            if (motionEvent1.getAction() == MotionEvent.ACTION_UP) {
+                mChart.moveViewToX(mChart.getLowestSnapToXIndex());
+                // Do post delayed, otherwise move-to isn't shown
+                mChart.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mChart.invalidate();
+                    }
+                }, 100L);
+            }
+        }
+
+        @Override
+        public void onChartScale(MotionEvent motionEvent, float v, float v1) {
+
+        }
+
+        @Override
+        public void onChartTranslate(MotionEvent motionEvent, float v, float v1) {
+        }
+    };
 
     private LineData generateLineData() {
 

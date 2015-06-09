@@ -11,6 +11,7 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.View;
 import android.view.View.OnTouchListener;
+import android.view.ViewConfiguration;
 import android.view.animation.AnimationUtils;
 
 import com.github.mikephil.charting.charts.BarLineChartBase;
@@ -65,6 +66,9 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
     /** the last highlighted object */
     private Highlight mLastHighlighted;
 
+    // BECKY
+    private MotionEvent mCurrentDownEvent;
+
     private DataSet<?> mClosestDataSetToTouch;
 
     /** the chart the listener represents */
@@ -118,6 +122,12 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
                 stopDeceleration();
 
                 saveTouchStart(event);
+
+                // BECKY
+                if (mCurrentDownEvent != null) {
+                    mCurrentDownEvent.recycle();
+                }
+                mCurrentDownEvent = MotionEvent.obtain(event);
 
                 break;
             case MotionEvent.ACTION_POINTER_DOWN:
@@ -206,6 +216,13 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
                         mDecelerationVelocity = new PointF(velocityX, velocityY);
 
                         Utils.postInvalidateOnAnimation(mChart); // This causes computeScroll to fire, recommended for this by Google
+
+                        // BECKY - call onFling
+                        int minimumFlingVelocity = ViewConfiguration.getMinimumFlingVelocity();
+                        if ((Math.abs(velocityY) > minimumFlingVelocity)
+                                || (Math.abs(velocityX) > minimumFlingVelocity)) {
+                            onFling(mCurrentDownEvent, event, velocityX, velocityY);
+                        }
                     }
                 }
 
@@ -216,6 +233,11 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
                     mVelocityTracker.recycle();
                     mVelocityTracker = null;
                 }
+
+                // BECKY - add alert to listener that scrolling has stopped
+                OnChartGestureListener l = mChart.getOnChartGestureListener();
+                if (l != null)
+                    l.onChartTranslate(event, event.getX(), event.getY());
 
                 break;
             case MotionEvent.ACTION_POINTER_UP:

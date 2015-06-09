@@ -1173,6 +1173,13 @@ public abstract class BarLineChartBase<T extends BarLineScatterCandleData<? exte
         return (pts[0] <= 0) ? 0 : (int) (pts[0] + 1);
     }
 
+    // BECKY
+    public float getLowestSnapToXIndex() {
+        float[] pts = new float[]{this.mViewPortHandler.contentLeft(), this.mViewPortHandler.contentBottom()};
+        this.getTransformer(AxisDependency.LEFT).pixelsToValue(pts);
+        return pts[0] <= 0.0F?0:((int)pts[0] + ((pts[0]%(int)pts[0]>0)?0.5f:-0.5f));
+    }
+
     /**
      * Returns the highest x-index (value on the x-axis) that is still visible
      * on the chart.
