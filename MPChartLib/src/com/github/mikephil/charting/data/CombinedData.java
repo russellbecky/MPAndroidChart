@@ -1,6 +1,11 @@
 
 package com.github.mikephil.charting.data;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -11,7 +16,11 @@ import java.util.List;
  */
 public class CombinedData extends BarLineScatterCandleData<BarLineScatterCandleDataSet<?>> {
 
-    private LineData mLineData;
+    private static final String DEFAULT_LINE_TAG = "DEFAULT_LINE_TAG";
+
+    // BECKY - support multiple lines
+    private HashMap<String, LineData> mLineDataHashMap;
+
     private BarData mBarData;
     private ScatterData mScatterData;
     private CandleData mCandleData;
@@ -19,18 +28,35 @@ public class CombinedData extends BarLineScatterCandleData<BarLineScatterCandleD
 
     public CombinedData() {
         super();
+
+        if (mLineDataHashMap == null)
+            mLineDataHashMap = new HashMap<String, LineData>();
     }
 
     public CombinedData(List<String> xVals) {
         super(xVals);
+
+        if (mLineDataHashMap == null)
+            mLineDataHashMap = new HashMap<String, LineData>();
     }
 
     public CombinedData(String[] xVals) {
         super(xVals);
+
+        if (mLineDataHashMap == null)
+            mLineDataHashMap = new HashMap<String, LineData>();
     }
 
+    // BECKY - support multiple lines
     public void setData(LineData data) {
-        mLineData = data;
+        mLineDataHashMap.put(DEFAULT_LINE_TAG, data);
+        mDataSets.addAll(data.getDataSets());
+        init(data.getDataSets());
+    }
+
+    // BECKY - support multiple lines
+    public void setData(LineData data, String lineDataTagString) {
+        mLineDataHashMap.put(lineDataTagString, data);
         mDataSets.addAll(data.getDataSets());
         init(data.getDataSets());
     }
@@ -63,8 +89,19 @@ public class CombinedData extends BarLineScatterCandleData<BarLineScatterCandleD
         return mBubbleData;
     }
 
+    // BECKY - support multiple lines
     public LineData getLineData() {
-        return mLineData;
+        return mLineDataHashMap.get(DEFAULT_LINE_TAG);
+    }
+
+    // BECKY - support multiple lines
+    public LineData getLineData(String lineDataTagString) {
+        return mLineDataHashMap.get(lineDataTagString);
+    }
+
+    // BECKY - support multiple lines
+    public HashMap<String, LineData> getAllLineData() {
+        return mLineDataHashMap;
     }
 
     public BarData getBarData() {
@@ -81,8 +118,17 @@ public class CombinedData extends BarLineScatterCandleData<BarLineScatterCandleD
 
     @Override
     public void notifyDataChanged() {
-        if (mLineData != null)
-            mLineData.notifyDataChanged();
+
+        // BECKY - support multiple lines
+        if (mLineDataHashMap != null && mLineDataHashMap.size() > 0) {
+
+            // Loop through each LineData object
+            Iterator lineDataIterator = mLineDataHashMap.keySet().iterator();
+            while(lineDataIterator.hasNext()) {
+                String key = (String)lineDataIterator.next();
+                ((LineData)mLineDataHashMap.get(key)).notifyDataChanged();
+            }
+        }
         if (mBarData != null)
             mBarData.notifyDataChanged();
         if (mCandleData != null)

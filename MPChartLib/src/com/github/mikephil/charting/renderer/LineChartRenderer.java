@@ -21,6 +21,8 @@ import com.github.mikephil.charting.utils.Highlight;
 import com.github.mikephil.charting.utils.Transformer;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class LineChartRenderer extends DataRenderer {
@@ -65,14 +67,29 @@ public class LineChartRenderer extends DataRenderer {
     @Override
     public void initBuffers() {
 
+        // BECKY - if there is no default lineData, use the first one in the HashMap
         LineData lineData = mChart.getLineData();
-        mLineBuffers = new LineBuffer[lineData.getDataSetCount()];
-        mCircleBuffers = new CircleBuffer[lineData.getDataSetCount()];
 
-        for (int i = 0; i < mLineBuffers.length; i++) {
-            LineDataSet set = lineData.getDataSetByIndex(i);
-            mLineBuffers[i] = new LineBuffer(set.getEntryCount() * 4 - 4);
-            mCircleBuffers[i] = new CircleBuffer(set.getEntryCount() * 2);
+        if (lineData == null) {
+
+            HashMap<String, LineData> allLineDataHashMap = mChart.getAllLineData();
+
+            Iterator lineDataIterator = allLineDataHashMap.keySet().iterator();
+            if(lineDataIterator.hasNext()) {
+                String key = (String)lineDataIterator.next();
+                lineData = (LineData)allLineDataHashMap.get(key);
+            }
+        }
+
+        if (lineData != null) {
+            mLineBuffers = new LineBuffer[lineData.getDataSetCount()];
+            mCircleBuffers = new CircleBuffer[lineData.getDataSetCount()];
+
+            for (int i = 0; i < mLineBuffers.length; i++) {
+                LineDataSet set = lineData.getDataSetByIndex(i);
+                mLineBuffers[i] = new LineBuffer(set.getEntryCount() * 4 - 4);
+                mCircleBuffers[i] = new CircleBuffer(set.getEntryCount() * 2);
+            }
         }
     }
 
@@ -96,12 +113,23 @@ public class LineChartRenderer extends DataRenderer {
 
         mDrawBitmap.eraseColor(Color.TRANSPARENT);
 
-        LineData lineData = mChart.getLineData();
+        // BECKY - added to support multiple lines
+        HashMap<String, LineData> allLineDataHashMap = mChart.getAllLineData();
 
-        for (LineDataSet set : lineData.getDataSets()) {
+        if (allLineDataHashMap != null) {
 
-            if (set.isVisible())
-                drawDataSet(c, set);
+            // Loop through each LineData object
+            Iterator lineDataIterator = allLineDataHashMap.keySet().iterator();
+            while(lineDataIterator.hasNext()) {
+                String key = (String)lineDataIterator.next();
+                LineData lineData = (LineData)allLineDataHashMap.get(key);
+
+                for (LineDataSet set : lineData.getDataSets()) {
+
+                    if (set.isVisible())
+                        drawDataSet(c, set);
+                }
+            }
         }
 
         c.drawBitmap(mDrawBitmap, 0, 0, mRenderPaint);
@@ -430,6 +458,10 @@ public class LineChartRenderer extends DataRenderer {
     @Override
     public void drawValues(Canvas c) {
 
+        // BECKY - multiple lines are not supported here yet!
+        if (mChart.getLineData() == null)
+            return;
+
         if (mChart.getLineData().getYValCount() < mChart.getMaxVisibleCount()
                 * mViewPortHandler.getScaleX()) {
 
@@ -496,6 +528,10 @@ public class LineChartRenderer extends DataRenderer {
 
         float phaseX = mAnimator.getPhaseX();
         float phaseY = mAnimator.getPhaseY();
+
+        // BECKY - multiple lines are not supported here yet!
+        if (mChart.getLineData() == null)
+            return;
 
         List<LineDataSet> dataSets = mChart.getLineData().getDataSets();
 

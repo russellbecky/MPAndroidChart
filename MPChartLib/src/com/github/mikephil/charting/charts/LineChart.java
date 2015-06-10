@@ -9,6 +9,8 @@ import com.github.mikephil.charting.interfaces.LineDataProvider;
 import com.github.mikephil.charting.renderer.LineChartRenderer;
 import com.github.mikephil.charting.utils.FillFormatter;
 
+import java.util.HashMap;
+
 /**
  * Chart that draws lines, surfaces, circles, ...
  * 
@@ -91,5 +93,14 @@ public class LineChart extends BarLineChartBase<LineData> implements LineDataPro
     @Override
     public LineData getLineData() {
         return mData;
+    }
+
+    // BECKY - added to support multiple lines
+    @Override
+    public HashMap<String, LineData> getAllLineData() {
+
+        HashMap<String, LineData> linesHashMap = new HashMap<String, LineData>();
+        linesHashMap.put("", mData);
+        return linesHashMap;
     }
 }

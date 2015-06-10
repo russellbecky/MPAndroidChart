@@ -56,7 +56,9 @@ public class CombinedChartRenderer extends DataRenderer {
                         mRenderers.add(new BubbleChartRenderer(chart, animator, viewPortHandler));
                     break;
                 case LINE:
-                    if (chart.getLineData() != null)
+                    // BECKY - support for multiple lines
+//                    if (chart.getLineData() != null)
+                    if (chart.getAllLineData() != null || chart.getAllLineData().size() > 0)
                         mRenderers.add(new LineChartRenderer(chart, animator, viewPortHandler));
                     break;
                 case CANDLE:
@@ -84,6 +86,8 @@ public class CombinedChartRenderer extends DataRenderer {
 
         for (DataRenderer renderer : mRenderers) {
             if (renderer instanceof LineChartRenderer)
+                // BECKY - added percentage space in here in order to
+                // not draw line at beginning / end of chart - here hardcoded!
                 ((LineChartRenderer)renderer).drawData(c, 20);
             else
                 renderer.drawData(c);

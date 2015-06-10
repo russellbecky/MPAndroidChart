@@ -19,6 +19,8 @@ import com.github.mikephil.charting.interfaces.ScatterDataProvider;
 import com.github.mikephil.charting.renderer.CombinedChartRenderer;
 import com.github.mikephil.charting.utils.FillFormatter;
 
+import java.util.HashMap;
+
 /**
  * This chart class allows the combination of lines, bars, scatter and candle
  * data all displayed in one chart area.
@@ -137,6 +139,21 @@ public class CombinedChart extends BarLineChartBase<CombinedData> implements Lin
         if (mData == null)
             return null;
         return mData.getLineData();
+    }
+
+    // BECKY - support multiple lines
+    public LineData getLineData(String lineDataTagString) {
+        if (mData == null)
+            return null;
+        return mData.getLineData(lineDataTagString);
+    }
+
+    // BECKY - support multiple lines
+    @Override
+    public HashMap<String, LineData> getAllLineData() {
+        if (mData == null)
+            return null;
+        return mData.getAllLineData();
     }
 
     @Override

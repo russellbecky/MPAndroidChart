@@ -55,7 +55,7 @@ public class CombinedChartActivity extends DemoBase {
         mChart.setDrawBarShadow(false);
 
         // draw bars behind lines
-        mChart.setDrawOrder(new DrawOrder[] {
+        mChart.setDrawOrder(new DrawOrder[]{
                 DrawOrder.BAR, DrawOrder.BUBBLE, DrawOrder.CANDLE, DrawOrder.LINE, DrawOrder.SCATTER
         });
 
@@ -70,13 +70,18 @@ public class CombinedChartActivity extends DemoBase {
 
         CombinedData data = new CombinedData(mMonths);
 
-        data.setData(generateLineData());
+//        data.setData(generateLineData());
+        data.setData(generateLineData(), "LINE1");
+        data.setData(generateLineData(), "LINE2");
         data.setData(generateBarData());
 //        data.setData(generateBubbleData());
 //         data.setData(generateScatterData());
 //         data.setData(generateCandleData());
 
         mChart.setData(data);
+
+        LineData line1 = mChart.getLineData("LINE1");
+        LineData line2 = mChart.getLineData("LINE2");
 
         mChart.setVisibleXRange(6);
 
@@ -152,7 +157,7 @@ public class CombinedChartActivity extends DemoBase {
             entries.add(new Entry(getRandom(15, 10), index));
 
         LineDataSet set = new LineDataSet(entries, "Line DataSet");
-        set.setColor(Color.rgb(240, 238, 70));
+        set.setColor(Color.rgb(240, 238, (int)getRandom(15, 70)));
         set.setLineWidth(2.5f);
         set.setCircleColor(Color.rgb(240, 238, 70));
         set.setCircleSize(5f);

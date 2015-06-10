@@ -4,9 +4,12 @@ package com.github.mikephil.charting.interfaces;
 import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.utils.FillFormatter;
 
+import java.util.HashMap;
+
 public interface LineDataProvider extends BarLineScatterCandleDataProvider {
 
     public LineData getLineData();
+    public HashMap<String, LineData> getAllLineData();
 
     /**
      * Sets a custom FillFormatter to the chart that handles the position of the
