@@ -234,10 +234,15 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
                     mVelocityTracker = null;
                 }
 
-                // BECKY - add alert to listener that scrolling has stopped
-                OnChartGestureListener l = mChart.getOnChartGestureListener();
-                if (l != null)
-                    l.onChartTranslate(event, event.getX(), event.getY());
+                // BECKY - If not a swipe, then register this as a highlight tap
+                if (Math.abs(event.getX() - mTouchStartPoint.x) < 20)
+                    performHighlight(event);
+                else {
+                    // BECKY - add alert to listener that scrolling has stopped
+                    OnChartGestureListener l = mChart.getOnChartGestureListener();
+                    if (l != null)
+                        l.onChartTranslate(event, event.getX(), event.getY());
+                }
 
                 break;
             case MotionEvent.ACTION_POINTER_UP:
@@ -569,7 +574,7 @@ public class BarLineChartTouchListener<T extends BarLineChartBase<? extends BarL
     @Override
     public boolean onSingleTapUp(MotionEvent e) {
 
-        performHighlight(e);
+        // BECKY performHighlight(e);
 
         return super.onSingleTapUp(e);
     }
